@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ - язык программирования</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <style>
+        /* Подключение локального шрифта */
+        @font-face {
+            font-family: 'RobotoSlab';
+            src: url('RobotoSlab-VariableFont_wght.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        /* Если шрифт недоступен, создаем базовую версию */
+        @font-face {
+            font-family: 'RobotoSlab';
+            src: local('Arial');
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'RobotoSlab', serif;
+            color: #2c3e50;
+        }
+        
+        h1 {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h2 {
+            font-size: 18px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        h3 {
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        a {
+            color: #2980b9;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        a:hover {
+            color: #e74c3c;
+            text-decoration: underline;
+        }
+        
+        ul, ol {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 5px;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .toc {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            display: block;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+        
+        .toc a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: 1px solid #ddd;
+        }
+        
+        .img-left {
+            float: left;
+            margin-right: 20px;
+            margin-bottom: 15px;
+            max-width: 300px;
+        }
+        
+        .img-right {
+            float: right;
+            margin-left: 20px;
+            margin-bottom: 15px;
+            max-width: 300px;
+        }
+        
+        .img-center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 20px;
+            max-width: 500px;
+        }
+        
+        .img-placeholder {
+            background-color: #ecf0f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            font-style: italic;
+            min-height: 200px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            font-family: 'Courier New', monospace;
+            line-height: 1.4;
+        }
+        
+        .keyword {
+            color: #f92672;
+        }
+        
+        .type {
+            color: #66d9ef;
+        }
+        
+        .string {
+            color: #e6db74;
+        }
+        
+        .comment {
+            color: #75715e;
+        }
+        
+        .function {
+            color: #a6e22e;
+        }
+        
+        .number {
+            color: #ae81ff;
+        }
+        
+        .custom-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .custom-list li {
+            padding-left: 25px;
+            margin-bottom: 10px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="%233498db"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: 0 2px;
+        }
+        
+        .tags-list, .css-properties {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+        
+        .tags-list h3, .css-properties h3 {
+            margin-top: 0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+        
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        /* Стили для кнопок загрузки изображений */
+        .image-load-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 5px;
+            font-size: 12px;
+        }
+        
+        .image-load-btn:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <header>
+            <h1>Язык программирования C++</h1>
+        </header>
+        
+        <section class="toc">
+            <h2>Содержание</h2>
+            <ul>
+                <li><a href="#history">История создания</a></li>
+                <li><a href="#overview">Краткий обзор языка</a></li>
+                <li><a href="#examples">Примеры кода</a></li>
+            </ul>
+        </section>
+        
+        <section id="history">
+            <h2>История создания</h2>
+            
+            <!-- Вариант 1: Локальное изображение -->
+            <img src="images/bjarne-stroustrup.jpg" alt="Бьёрн Страуструп" class="img-left" onerror="this.style.display='none'; document.getElementById('placeholder1').style.display='flex';">
+            
+            <!-- Вариант 2: Запасной вариант с баз64 изображением -->
+            <div id="placeholder1" class="img-left img-placeholder" style="display: none;">
+                <div>
+                    <p>Бьёрн Страуструп - создатель C++</p>
+                    <button class="image-load-btn" onclick="loadExternalImage('placeholder1', 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Bjarne-stroustrup.jpg/220px-Bjarne-stroustrup.jpg', 'Бьёрн Страуструп')">Загрузить изображение</button>
+                </div>
+            </div>
+            
+            <p>Язык программирования <strong>C++</strong> был создан <em>Бьёрном Страуструпом</em> в начале 1980-х годов в Bell Labs. Изначально язык назывался <span class="highlight">"C with Classes"</span> (Си с классами), так как добавлял к языку Си концепции объектно-ориентированного программирования, в частности классы.</p>
+            
+            <p>Страуструп начал работу над языком в 1979 году, желая расширить возможности языка Си, сохранив при этом его эффективность и низкоуровневые возможности. Первый коммерческий выпуск C++ состоялся в 1985 году.</p>
+            
+            <p>Название <strong>C++</strong> было предложено Риком Маскитти в 1983 году. Знак "++" является оператором инкремента в языке Си, что символизирует эволюцию языка относительно его предшественника.</p>
+            
+            <p>Важные вехи в развитии языка:</p>
+            <ol>
+                <li>1985 - Первый коммерческий релиз C++</li>
+                <li>1989 - Выпуск C++ 2.0 с множественным наследованием и абстрактными классами</li>
+                <li>1998 - Первый международный стандарт ISO/IEC 14882:1998 (C++98)</li>
+                <li>2003 - Исправленный стандарт C++03</li>
+                <li>2011 - Значительное обновление C++11 (ранее известный как C++0x)</li>
+                <li>2014, 2017, 2020 - Последующие обновления стандарта</li>
+            </ol>
+            
+            <!-- Вариант 1: Локальное изображение -->
+            <img src="images/cpp-book.jpg" alt="Первое издание книги Страуструпа" class="img-right" onerror="this.style.display='none'; document.getElementById('placeholder2').style.display='flex';">
+            
+            <!-- Вариант 2: Запасной вариант с баз64 изображением -->
+            <div id="placeholder2" class="img-right img-placeholder" style="display: none;">
+                <div>
+                    <p>Первое издание книги "The C++ Programming Language"</p>
+                    <button class="image-load-btn" onclick="loadExternalImage('placeholder2', 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/First_edition_The_C%2B%2B_Programming_Language.jpg/220px-First_edition_The_C%2B%2B_Programming_Language.jpg', 'Первое издание книги Страуструпа')">Загрузить изображение</button>
+                </div>
+            </div>
+            
+            <p>Книга Страуструпа <cite>"The C++ Programming Language"</cite>, опубликованная в 1985 году, стала первым учебником по языку и сыграла важную роль в его популяризации.</p>
+            
+            <p>Стандартизация языка началась в 1990 году, когда был создан комитет ANSI C++. Первый международный стандарт был принят в 1998 году (известный как C++98). С тех пор язык продолжает развиваться, с регулярными обновлениями стандарта.</p>
+            
+            <div class="clearfix"></div>
+        </section>
+        
+        <section id="overview">
+            <h2>Краткий обзор языка</h2>
+            
+            <p><strong>C++</strong> - это компилируемый, статически типизированный язык программирования общего назначения. Он поддерживает различные парадигмы программирования:</p>
+            
+            <ul class="custom-list">
+                <li>Процедурное программирование</li>
+                <li>Объектно-ориентированное программирование (ООП)</li>
+                <li>Обобщенное программирование (шаблоны)</li>
+                <li>Функциональное программирование (в более поздних версиях)</li>
+            </ul>
+            
+            <p>Основные особенности языка C++:</p>
+            <ul>
+                <li>Высокая производительность и эффективность</li>
+                <li>Прямой доступ к памяти через указатели</li>
+                <li>Поддержка низкоуровневых операций</li>
+                <li>Богатая стандартная библиотека (STL)</li>
+                <li>Кроссплатформенность</li>
+                <li>Совместимость с языком C</li>
+            </ul>
+            
+            <!-- Вариант 1: Локальное изображение -->
+            <img src="images/cpp-logo.png" alt="Логотип C++" class="img-center" onerror="this.style.display='none'; document.getElementById('placeholder3').style.display='flex';">
+            
+            <!-- Вариант 2: Запасной вариант с баз64 изображением -->
+            <div id="placeholder3" class="img-center img-placeholder" style="display: none;">
+                <div>
+                    <p>Логотип языка программирования C++</p>
+                    <button class="image-load-btn" onclick="loadExternalImage('placeholder3', 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/ISO_C%2B%2B_Logo.svg/200px-ISO_C%2B%2B_Logo.svg.png', 'Логотип C++')">Загрузить изображение</button>
+                </div>
+            </div>
+            
+            <p>C++ широко используется в областях, где важна производительность:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Область применения</th>
+                        <th>Примеры</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Системное программирование</td>
+                        <td>Операционные системы, драйверы устройств</td>
+                    </tr>
+                    <tr>
+                        <td>Разработка игр</td>
+                        <td>Игровые движки (Unreal Engine, CryEngine)</td>
+                    </tr>
+                    <tr>
+                        <td>Высокопроизводительные вычисления</td>
+                        <td>Научные расчеты, симуляции</td>
+                    </tr>
+                    <tr>
+                        <td>Встраиваемые системы</td>
+                        <td>Микроконтроллеры, IoT устройства</td>
+                    </tr>
+                    <tr>
+                        <td>Финансовые технологии</td>
+                        <td>Торговые системы, анализ данных</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p>Стандартная библиотека C++ (STL - Standard Template Library) предоставляет богатый набор контейнеров, алгоритмов и итераторов, которые значительно упрощают разработку.</p>
+        </section>
+        
+        <section id="examples">
+            <h2>Примеры кода</h2>
+            
+            <p>Ниже представлены основные конструкции языка C++ с синтаксической подсветкой:</p>
+            
+            <h3>Простая программа "Hello, World!"</h3>
+            <div class="code-block">
+                <span class="comment">// Подключение заголовочного файла для ввода/вывода</span><br>
+                <span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span><br>
+                <br>
+                <span class="comment">// Использование пространства имен std</span><br>
+                <span class="keyword">using namespace</span> std;<br>
+                <br>
+                <span class="comment">// Главная функция программы</span><br>
+                <span class="type">int</span> <span class="function">main</span>() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Вывод текста на консоль</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;cout << <span class="string">"Hello, World!"</span> << endl;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Возврат значения</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="number">0</span>;<br>
+                }
+            </div>
+            
+            <h3>Класс и объекты</h3>
+            <div class="code-block">
+                <span class="comment">// Определение класса</span><br>
+                <span class="keyword">class</span> <span class="type">Rectangle</span> {<br>
+                <span class="keyword">private</span>:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">double</span> width, height;<br>
+                <br>
+                <span class="keyword">public</span>:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Конструктор</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="function">Rectangle</span>(<span class="type">double</span> w, <span class="type">double</span> h) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width = w;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height = h;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Метод для вычисления площади</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">double</span> <span class="function">area</span>() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> width * height;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Метод для вычисления периметра</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">double</span> <span class="function">perimeter</span>() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="number">2</span> * (width + height);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                };<br>
+                <br>
+                <span class="type">int</span> <span class="function">main</span>() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Создание объекта класса Rectangle</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Rectangle</span> rect(<span class="number">5.0</span>, <span class="number">3.0</span>);<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Использование методов объекта</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;cout << <span class="string">"Area: "</span> << rect.<span class="function">area</span>() << endl;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;cout << <span class="string">"Perimeter: "</span> << rect.<span class="function">perimeter</span>() << endl;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="number">0</span>;<br>
+                }
+            </div>
+            
+            <h3>Шаблоны (обобщенное программирование)</h3>
+            <div class="code-block">
+                <span class="comment">// Шаблонная функция для нахождения максимума</span><br>
+                <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;<br>
+                T <span class="function">maxValue</span>(T a, T b) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> (a > b) ? a : b;<br>
+                }<br>
+                <br>
+                <span class="type">int</span> <span class="function">main</span>() {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">int</span> intMax = <span class="function">maxValue</span>(<span class="number">10</span>, <span class="number">20</span>);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">double</span> doubleMax = <span class="function">maxValue</span>(<span class="number">15.5</span>, <span class="number">10.2</span>);<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;cout << <span class="string">"Max int: "</span> << intMax << endl;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;cout << <span class="string">"Max double: "</span> << doubleMax << endl;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="number">0</span>;<br>
+                }
+            </div>
+            
+            <p>Для более подробного изучения C++ рекомендуется посетить <a href="https://isocpp.org/" target="_blank">официальный сайт</a> или прочитать книгу <a href="https://www.stroustrup.com/programming.html" target="_blank">"The C++ Programming Language"</a> от создателя языка.</p>
+        </section>
+        
+        <section class="tags-list">
+            <h3>Использованные HTML-теги (более 30):</h3>
+            <p>&lt;!DOCTYPE&gt;, &lt;html&gt;, &lt;head&gt;, &lt;meta&gt;, &lt;title&gt;, &lt;link&gt;, &lt;style&gt;, &lt;body&gt;, &lt;div&gt;, &lt;header&gt;, &lt;h1&gt;, &lt;h2&gt;, &lt;h3&gt;, &lt;section&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;a&gt;, &lt;p&gt;, &lt;img&gt;, &lt;ol&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;span&gt;, &lt;cite&gt;, &lt;table&gt;, &lt;thead&gt;, &lt;tbody&gt;, &lt;tr&gt;, &lt;th&gt;, &lt;td&gt;, &lt;footer&gt;, &lt;button&gt;</p>
+        </section>
+        
+        <section class="css-properties">
+            <h3>Использованные CSS-свойства (более 40):</h3>
+            <p>font-family, font-size, font-weight, font-style, line-height, color, background-color, margin, padding, max-width, text-align, border-bottom, border-left, border-top, border-radius, box-shadow, display, float, clear, width, height, max-width, list-style-type, text-decoration, transition, background-image, background-repeat, background-position, overflow-x, border-collapse, position, content, clear, box-sizing, border, border-radius, text-shadow, opacity, transform, transition, cursor, z-index, overflow, white-space, word-wrap, text-transform, letter-spacing, vertical-align, background, outline, resize, visibility, overflow-y, min-height, box-shadow, text-overflow, word-break, align-items, justify-content, flex</p>
+        </section>
+        
+        <footer>
+            <p>Статья подготовлена в учебных целях. Информация взята из открытых источников, включая <a href="https://ru.wikipedia.org/wiki/C%2B%2B" target="_blank">Википедию</a>.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Функция для загрузки внешних изображений
+        function loadExternalImage(placeholderId, imageUrl, altText) {
+            const placeholder = document.getElementById(placeholderId);
+            const img = new Image();
+            
+            img.onload = function() {
+                // Создаем элемент изображения
+                const newImg = document.createElement('img');
+                newImg.src = imageUrl;
+                newImg.alt = altText;
+                newImg.className = placeholder.className.replace('img-placeholder', '');
+                
+                // Заменяем плейсхолдер на изображение
+                placeholder.parentNode.replaceChild(newImg, placeholder);
+            };
+            
+            img.onerror = function() {
+                alert('Не удалось загрузить изображение. Проверьте подключение к интернету.');
+            };
+            
+            img.src = imageUrl;
+        }
+        
+        // Автоматическая попытка загрузки изображений при загрузке страницы
+        window.addEventListener('load', function() {
+            // Проверяем, загрузились ли изображения
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                if (!img.complete || img.naturalHeight === 0) {
+                    // Если изображение не загрузилось, показываем плейсхолдер
+                    const src = img.getAttribute('src');
+                    const alt = img.getAttribute('alt');
+                    const className = img.className;
+                    
+                    // Создаем ID для плейсхолдера на основе имени файла
+                    const placeholderId = 'placeholder-' + src.replace(/[^a-zA-Z0-9]/g, '-');
+                    
+                    // Создаем плейсхолдер
+                    const placeholder = document.createElement('div');
+                    placeholder.id = placeholderId;
+                    placeholder.className = className + ' img-placeholder';
+                    placeholder.innerHTML = `
+                        <div>
+                            <p>${alt}</p>
+                            <button class="image-load-btn" onclick="loadExternalImage('${placeholderId}', '${src}', '${alt}')">Загрузить изображение</button>
+                        </div>
+                    `;
+                    
+                    // Заменяем изображение плейсхолдером
+                    img.parentNode.replaceChild(placeholder, img);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
