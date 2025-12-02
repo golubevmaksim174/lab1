@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вариант 6: Все задания</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .task {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+        }
+        .result {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border-left: 4px solid #3498db;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Вариант 6: Все задания</h1>
+
+    <!-- ЗАДАНИЕ 1 -->
+    <div class="task">
+        <h2>Задание 1: Проверка корректности даты</h2>
+        <p>Введите день, месяц и год (3 числа):</p>
+        <div>
+            <input type="number" id="day" placeholder="День (1-31)" min="1" max="31">
+            <input type="number" id="month" placeholder="Месяц (1-12)" min="1" max="12">
+            <input type="number" id="year" placeholder="Год (например, 2024)" min="1">
+        </div>
+        <button onclick="checkDate()">Проверить дату</button>
+        <div id="result1" class="result"></div>
+    </div>
+
+    <!-- ЗАДАНИЕ 2 -->
+    <div class="task">
+        <h2>Задание 2: Обработка массива чисел</h2>
+        
+        <h3>Часть А: Сумма элементов между первым и последним, где |число - e| ≤ 0.00001</h3>
+        <p>Введите массив чисел через запятую (например: 2.7, 3.14, 2.71828, 1.5, 2.71829):</p>
+        <input type="text" id="arrayInput" placeholder="2.7, 3.14, 2.71828, 1.5, 2.71829" value="2.7, 3.14, 2.71828, 1.5, 2.71829">
+        <button onclick="calculatePartA()">Вычислить сумму</button>
+        <div id="result2a" class="result"></div>
+        
+        <h3>Часть Б: Удалить элементы, где сумма цифр целой части - простое число</h3>
+        <button onclick="calculatePartB()">Обработать массив</button>
+        <div id="result2b" class="result"></div>
+    </div>
+
+    <!-- ЗАДАНИЕ 4 -->
+    <div class="task">
+        <h2>Задание 4: Найти самое длинное слово в предложении</h2>
+        <p>Введите предложение:</p>
+        <textarea id="sentence" rows="3" placeholder="Введите предложение здесь...">Быстрая коричневая лиса прыгает через ленивую собаку</textarea>
+        <button onclick="findLongestWord()">Найти самое длинное слово</button>
+        <div id="result4" class="result"></div>
+    </div>
+
+    <!-- КОД JavaScript -->
+    <script>
+        // ============================================
+        // ЗАДАНИЕ 1: Проверка корректности даты
+        // ============================================
+        function isLeapYear(year) {
+            // Високосный год, если делится на 400 ИЛИ делится на 4, но не на 100
+            return (year % 400 === 0) || (year % 4 === 0 && year % 100 !== 0);
+        }
+
+        function isValidDate(day, month, year) {
+            // 1. Базовые проверки
+            if (year < 1 || month < 1 || month > 12 || day < 1) {
+                return false;
+            }
+            
+            // 2. Массив дней в месяцах
+            const daysInMonth = [
+                31, // январь
+                isLeapYear(year) ? 29 : 28, // февраль
+                31, // март
+                30, // апрель
+                31, // май
+                30, // июнь
+                31, // июль
+                31, // август
+                30, // сентябрь
+                31, // октябрь
+                30, // ноябрь
+                31  // декабрь
+            ];
+            
+            // 3. Проверка дня
+            return day <= daysInMonth[month - 1];
+        }
+
+        function checkDate() {
+            const day = parseInt(document.getElementById('day').value);
+            const month = parseInt(document.getElementById('month').value);
+            const year = parseInt(document.getElementById('year').value);
+            
+            if (isNaN(day) || isNaN(month) || isNaN(year)) {
+                document.getElementById('result1').innerHTML = 
+                    '<strong>Ошибка:</strong> Введите все три числа!';
+                return;
+            }
+            
+            const isValid = isValidDate(day, month, year);
+            const daysInYear = isLeapYear(year) ? 366 : 365;
+            
+            let result = `<strong>Дата: ${day}.${month}.${year}</strong><br>`;
+            result += `<strong>Статус:</strong> ${isValid ? '✅ Корректная дата' : '❌ Некорректная дата'}<br>`;
+            result += `<strong>Год ${year}:</strong> ${isLeapYear(year) ? 'високосный' : 'не високосный'}<br>`;
+            result += `<strong>Дней в году:</strong> ${daysInYear}`;
+            
+            document.getElementById('result1').innerHTML = result;
+        }
+
+        // ============================================
+        // ЗАДАНИЕ 2: Часть А
+        // ============================================
+        function calculatePartA() {
+            const input = document.getElementById('arrayInput').value;
+            const arr = input.split(',').map(str => parseFloat(str.trim()));
+            
+            const e = Math.E; // 2.718281828459045
+            const epsilon = 0.00001;
+            
+            // Находим индексы первого и последнего элементов, где |число - e| ≤ epsilon
+            let firstIndex = -1;
+            let lastIndex = -1;
+            
+            // Поиск первого элемента
+            for (let i = 0; i < arr.length; i++) {
+                if (Math.abs(arr[i] - e) <= epsilon) {
+                    firstIndex = i;
+                    break;
+                }
+            }
+            
+            // Поиск последнего элемента
+            for (let i = arr.length - 1; i >= 0; i--) {
+                if (Math.abs(arr[i] - e) <= epsilon) {
+                    lastIndex = i;
+                    break;
+                }
+            }
+            
+            let result = `<strong>Массив:</strong> [${arr.join(', ')}]<br>`;
+            result += `<strong>Число e:</strong> ${e.toFixed(8)}<br>`;
+            result += `<strong>Погрешность:</strong> ≤ ${epsilon}<br><br>`;
+            
+            if (firstIndex === -1 || lastIndex === -1) {
+                result += '<strong>Результат:</strong> Не найдено подходящих элементов';
+            } else if (firstIndex >= lastIndex) {
+                result += `<strong>Первый элемент:</strong> arr[${firstIndex}] = ${arr[firstIndex].toFixed(6)}<br>`;
+                result += `<strong>Последний элемент:</strong> arr[${lastIndex}] = ${arr[lastIndex].toFixed(6)}<br>`;
+                result += '<strong>Результат:</strong> Элементы совпадают или расположены некорректно для вычисления суммы';
+            } else {
+                // Вычисляем сумму между элементами
+                let sum = 0;
+                let elements = [];
+                for (let i = firstIndex + 1; i < lastIndex; i++) {
+                    sum += arr[i];
+                    elements.push(arr[i].toFixed(4));
+                }
+                
+                result += `<strong>Первый подходящий элемент:</strong> arr[${firstIndex}] = ${arr[firstIndex].toFixed(6)}<br>`;
+                result += `<strong>Последний подходящий элемент:</strong> arr[${lastIndex}] = ${arr[lastIndex].toFixed(6)}<br>`;
+                result += `<strong>Элементы между ними:</strong> ${elements.join(' + ')}<br>`;
+                result += `<strong>Сумма:</strong> ${sum.toFixed(6)}`;
+            }
+            
+            document.getElementById('result2a').innerHTML = result;
+        }
+
+        // ============================================
+        // ЗАДАНИЕ 2: Часть Б
+        // ============================================
+        // Вспомогательные функции для Части Б
+        function getIntegerPart(num) {
+            return Math.abs(Math.trunc(num));
+        }
+        
+        function sumOfDigits(number) {
+            let sum = 0;
+            let n = number;
+            while (n > 0) {
+                sum += n % 10;
+                n = Math.floor(n / 10);
+            }
+            return sum;
+        }
+        
+        function isPrime(num) {
+            if (num < 2) return false;
+            if (num === 2) return true;
+            if (num % 2 === 0) return false;
+            
+            for (let i = 3; i <= Math.sqrt(num); i += 2) {
+                if (num % i === 0) return false;
+            }
+            return true;
+        }
+        
+        function calculatePartB() {
+            // Тестовый массив
+            const testArray = [123.45, 456.78, 11.22, 23.5, 111.222, 7.89, 12.34, 235.79];
+            
+            // Фильтруем массив: удаляем элементы, где сумма цифр целой части - простое число
+            const filteredArray = testArray.filter(num => {
+                const intPart = getIntegerPart(num);
+                const sum = sumOfDigits(intPart);
+                return !isPrime(sum); // Оставляем только те, где сумма НЕ простая
+            });
+            
+            let result = `<strong>Исходный массив:</strong><br>`;
+            testArray.forEach((num, index) => {
+                const intPart = getIntegerPart(num);
+                const sum = sumOfDigits(intPart);
+                const primeStatus = isPrime(sum) ? '✔ простое' : '✘ не простое';
+                result += `${index}: ${num} → целая часть: ${intPart} → сумма цифр: ${sum} (${primeStatus})<br>`;
+            });
+            
+            result += `<br><strong>Отфильтрованный массив (удалены элементы с простой суммой цифр):</strong><br>`;
+            result += `[${filteredArray.join(', ')}]`;
+            
+            document.getElementById('result2b').innerHTML = result;
+        }
+
+        // ============================================
+        // ЗАДАНИЕ 4: Самое длинное слово
+        // ============================================
+        function findLongestWord() {
+            const sentence = document.getElementById('sentence').value.trim();
+            
+            if (!sentence) {
+                document.getElementById('result4').innerHTML = 
+                    '<strong>Ошибка:</strong> Введите предложение!';
+                return;
+            }
+            
+            // Удаляем знаки препинания и разбиваем на слова
+            const cleanSentence = sentence.replace(/[.,!?;:]/g, '');
+            const words = cleanSentence.split(/\s+/);
+            
+            // Находим самое длинное слово
+            let longestWord = '';
+            let maxLength = 0;
+            let positions = [];
+            
+            words.forEach((word, index) => {
+                if (word.length > maxLength) {
+                    longestWord = word;
+                    maxLength = word.length;
+                    positions = [index + 1];
+                } else if (word.length === maxLength && word !== longestWord) {
+                    positions.push(index + 1);
+                }
+            });
+            
+            let result = `<strong>Предложение:</strong> "${sentence}"<br>`;
+            result += `<strong>Все слова:</strong> ${words.join(', ')}<br>`;
+            result += `<strong>Количество слов:</strong> ${words.length}<br>`;
+            result += `<strong>Самое длинное слово:</strong> "${longestWord}"<br>`;
+            result += `<strong>Длина:</strong> ${maxLength} символов<br>`;
+            result += `<strong>Позиция(и) в предложении:</strong> ${positions.join(', ')}`;
+            
+            document.getElementById('result4').innerHTML = result;
+        }
+
+        // Автоматический запуск примеров при загрузке
+        window.onload = function() {
+            // Пример для задания 1
+            document.getElementById('day').value = '29';
+            document.getElementById('month').value = '2';
+            document.getElementById('year').value = '2024';
+            
+            // Пример для задания 4
+            document.getElementById('sentence').value = 
+                'Быстрая коричневая лиса прыгает через ленивую собаку';
+            
+            console.log('=== Вариант 6: Все задания готовы ===');
+            console.log('1. Проверка даты: 29.02.2024 (високосный)');
+            console.log('2. Обработка массива чисел');
+            console.log('3. Поиск самого длинного слова');
+        };
+    </script>
+
+    <div class="task">
+        <h2>Инструкция по использованию:</h2>
+        <ol>
+            <li><strong>Задание 1:</strong> Введите день, месяц и год, нажмите "Проверить дату"</li>
+            <li><strong>Задание 2, Часть А:</strong> Измените массив чисел или используйте пример, нажмите "Вычислить сумму"</li>
+            <li><strong>Задание 2, Часть Б:</strong> Нажмите "Обработать массив" для демонстрации</li>
+            <li><strong>Задание 4:</strong> Введите предложение, нажмите "Найти самое длинное слово"</li>
+        </ol>
+        
+</body>
+</html>
