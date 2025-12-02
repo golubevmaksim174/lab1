@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма регистрации абитуриента с валидацией</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+        }
+        
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        header p {
+            opacity: 0.8;
+            font-size: 14px;
+        }
+        
+        .form-container {
+            padding: 30px;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+            padding: 0 10px;
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 14px;
+        }
+        
+        label .required {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .error {
+            border-color: #e74c3c !important;
+        }
+        
+        .error:focus {
+            border-color: #e74c3c !important;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2) !important;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+        }
+        
+        .checkbox-group label {
+            margin-bottom: 0;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+        
+        .submit-btn {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        .reset-btn {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+        
+        .result-container {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .result-title {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result-title i {
+            color: #2ecc71;
+        }
+        
+        .result-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .result-item {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            color: #2c3e50;
+            font-size: 14px;
+            word-break: break-word;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .form-group {
+                min-width: 100%;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Регистрация абитуриента</h1>
+            <p>Заполните все обязательные поля формы (*)</p>
+        </header>
+        
+        <div class="form-container">
+            <form id="registrationForm">
+                <!-- Личные данные -->
+                <div class="form-section">
+                    <h3 class="section-title">👤 Личные данные</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Фамилия <span class="required">*</span></label>
+                            <input type="text" id="lastName" placeholder="Иванов">
+                            <div class="error-message" id="lastNameError">Введите фамилию (только буквы и дефис)</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Имя <span class="required">*</span></label>
+                            <input type="text" id="firstName" placeholder="Иван">
+                            <div class="error-message" id="firstNameError">Введите имя (только буквы)</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Отчество</label>
+                            <input type="text" id="middleName" placeholder="Иванович">
+                            <div class="error-message" id="middleNameError">Отчество может содержать только буквы</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Дата рождения <span class="required">*</span></label>
+                            <input type="date" id="birthDate">
+                            <div class="error-message" id="birthDateError">Введите корректную дату рождения (возраст 16-70 лет)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Контактная информация -->
+                <div class="form-section">
+                    <h3 class="section-title">📞 Контактная информация</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email <span class="required">*</span></label>
+                            <input type="email" id="email" placeholder="ivanov@example.com">
+                            <div class="error-message" id="emailError">Введите корректный email</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Телефон <span class="required">*</span></label>
+                            <input type="tel" id="phone" placeholder="+7 (999) 123-45-67">
+                            <div class="error-message" id="phoneError">Введите номер в формате +7 (XXX) XXX-XX-XX</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Адрес проживания <span class="required">*</span></label>
+                        <input type="text" id="address" placeholder="г. Москва, ул. Примерная, д. 1">
+                        <div class="error-message" id="addressError">Введите адрес проживания</div>
+                    </div>
+                </div>
+                
+                <!-- Образовательная информация -->
+                <div class="form-section">
+                    <h3 class="section-title">🎓 Образовательная информация</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Средний балл аттестата <span class="required">*</span></label>
+                            <input type="number" id="averageScore" min="1" max="5" step="0.1" placeholder="4.5">
+                            <div class="error-message" id="averageScoreError">Введите балл от 1.0 до 5.0</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Выбранная специальность <span class="required">*</span></label>
+                            <select id="specialty">
+                                <option value="">-- Выберите специальность --</option>
+                                <option value="informatics">Информатика и вычислительная техника</option>
+                                <option value="software">Программная инженерия</option>
+                                <option value="cybersecurity">Информационная безопасность</option>
+                                <option value="business">Бизнес-информатика</option>
+                                <option value="mathematics">Прикладная математика</option>
+                            </select>
+                            <div class="error-message" id="specialtyError">Выберите специальность</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Форма обучения <span class="required">*</span></label>
+                        <div class="checkbox-group">
+                            <input type="radio" id="fullTime" name="studyForm" value="fullTime">
+                            <label for="fullTime">Очная</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="radio" id="partTime" name="studyForm" value="partTime">
+                            <label for="partTime">Заочная</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="radio" id="distance" name="studyForm" value="distance">
+                            <label for="distance">Дистанционная</label>
+                        </div>
+                        <div class="error-message" id="studyFormError">Выберите форму обучения</div>
+                    </div>
+                </div>
+                
+                <!-- Дополнительная информация -->
+                <div class="form-section">
+                    <h3 class="section-title">📄 Дополнительная информация</h3>
+                    <div class="form-group">
+                        <label>Достижения и награды</label>
+                        <textarea id="achievements" rows="4" placeholder="Участие в олимпиадах, спортивные достижения, волонтерская деятельность..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="consent" name="consent">
+                            <label for="consent">Я даю согласие на обработку персональных данных <span class="required">*</span></label>
+                        </div>
+                        <div class="error-message" id="consentError">Необходимо дать согласие на обработку данных</div>
+                    </div>
+                </div>
+                
+                <!-- Кнопки -->
+                <div class="button-group">
+                    <button type="submit" class="submit-btn">✅ Отправить заявку</button>
+                    <button type="button" class="reset-btn" onclick="resetForm()">🔄 Очистить форму</button>
+                </div>
+            </form>
+            
+            <!-- Сообщение об успехе -->
+            <div class="success-message" id="successMessage">
+                ✅ Форма успешно отправлена! Данные обрабатываются.
+            </div>
+            
+            <!-- Результаты (скрыты до отправки) -->
+            <div class="result-container" id="resultContainer">
+                <h3 class="result-title"><i>✅</i> Данные абитуриента</h3>
+                <div class="result-data" id="resultData">
+                    <!-- Данные будут вставлены сюда -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // ВАЛИДАЦИОННЫЕ ФУНКЦИИ
+        // ============================================
+        
+        // Проверка имени/фамилии/отчества (только буквы и дефис)
+        function validateName(name, isRequired = true) {
+            if (!name.trim()) {
+                return isRequired ? "Это поле обязательно для заполнения" : "";
+            }
+            
+            // Проверка на только буквы, пробелы и дефисы
+            const nameRegex = /^[A-Za-zА-Яа-яЁё\s\-]+$/;
+            if (!nameRegex.test(name)) {
+                return "Можно использовать только буквы, пробелы и дефис";
+            }
+            
+            // Проверка длины
+            if (name.length < 2) {
+                return "Должно быть не менее 2 символов";
+            }
+            
+            if (name.length > 50) {
+                return "Не более 50 символов";
+            }
+            
+            return "";
+        }
+        
+        // Проверка email
+        function validateEmail(email) {
+            if (!email.trim()) {
+                return "Это поле обязательно для заполнения";
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return "Введите корректный email (например: example@mail.ru)";
+            }
+            
+            return "";
+        }
+        
+        // Проверка телефона (российский формат)
+        function validatePhone(phone) {
+            if (!phone.trim()) {
+                return "Это поле обязательно для заполнения";
+            }
+            
+            // Упрощенная проверка российского номера
+            const phoneRegex = /^\+7\s?\(?\d{3}\)?\s?\d{3}[-]?\d{2}[-]?\d{2}$/;
+            if (!phoneRegex.test(phone)) {
+                return "Введите номер в формате: +7 (XXX) XXX-XX-XX";
+            }
+            
+            return "";
+        }
+        
+        // Проверка даты рождения
+        function validateBirthDate(dateString) {
+            if (!dateString) {
+                return "Это поле обязательно для заполнения";
+            }
+            
+            const birthDate = new Date(dateString);
+            const today = new Date();
+            const minAgeDate = new Date();
+            minAgeDate.setFullYear(today.getFullYear() - 70);
+            const maxAgeDate = new Date();
+            maxAgeDate.setFullYear(today.getFullYear() - 16);
+            
+            if (birthDate > today) {
+                return "Дата рождения не может быть в будущем";
+            }
+            
+            if (birthDate < minAgeDate) {
+                return "Возраст не может быть больше 70 лет";
+            }
+            
+            if (birthDate > maxAgeDate) {
+                return "Возраст должен быть не менее 16 лет";
+            }
+            
+            return "";
+        }
+        
+        // Проверка среднего балла
+        function validateAverageScore(score) {
+            if (!score) {
+                return "Это поле обязательно для заполнения";
+            }
+            
+            const numScore = parseFloat(score);
+            if (isNaN(numScore)) {
+                return "Введите число";
+            }
+            
+            if (numScore < 1.0 || numScore > 5.0) {
+                return "Балл должен быть от 1.0 до 5.0";
+            }
+            
+            return "";
+        }
+        
+        // Проверка выбора (селект, радиокнопки, чекбокс)
+        function validateSelection(value, fieldName) {
+            if (!value) {
+                return `Выберите ${fieldName}`;
+            }
+            return "";
+        }
+        
+        // Проверка адреса
+        function validateAddress(address) {
+            if (!address.trim()) {
+                return "Это поле обязательно для заполнения";
+            }
+            
+            if (address.length < 10) {
+                return "Адрес должен содержать не менее 10 символов";
+            }
+            
+            return "";
+        }
+        
+        // ============================================
+        // ФУНКЦИИ ОТОБРАЖЕНИЯ ОШИБОК
+        // ============================================
+        
+        // Показать ошибку для поля
+        function showError(fieldId, errorMessage) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            
+            field.classList.add('error');
+            errorElement.textContent = errorMessage;
+            errorElement.style.display = 'block';
+        }
+        
+        // Скрыть ошибку для поля
+        function hideError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            
+            field.classList.remove('error');
+            errorElement.style.display = 'none';
+        }
+        
+        // ============================================
+        // ОБРАБОТКА ФОРМЫ
+        // ============================================
+        
+        // Сброс формы
+        function resetForm() {
+            document.getElementById('registrationForm').reset();
+            
+            // Скрыть все ошибки
+            const errorMessages = document.querySelectorAll('.error-message');
+            errorMessages.forEach(error => {
+                error.style.display = 'none';
+            });
+            
+            // Убрать классы ошибок
+            const errorFields = document.querySelectorAll('.error');
+            errorFields.forEach(field => {
+                field.classList.remove('error');
+            });
+            
+            // Скрыть результаты
+            document.getElementById('resultContainer').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            
+            console.log('Форма очищена');
+        }
+        
+        // Валидация всей формы
+        function validateForm() {
+            let isValid = true;
+            
+            // Сначала скрываем все ошибки
+            const allFields = ['lastName', 'firstName', 'middleName', 'birthDate', 
+                             'email', 'phone', 'address', 'averageScore', 
+                             'specialty', 'studyForm', 'consent'];
+            
+            allFields.forEach(fieldId => {
+                hideError(fieldId);
+            });
+            
+            // Валидация полей
+            const lastName = document.getElementById('lastName').value;
+            const lastNameError = validateName(lastName, true);
+            if (lastNameError) {
+                showError('lastName', lastNameError);
+                isValid = false;
+            }
+            
+            const firstName = document.getElementById('firstName').value;
+            const firstNameError = validateName(firstName, true);
+            if (firstNameError) {
+                showError('firstName', firstNameError);
+                isValid = false;
+            }
+            
+            const middleName = document.getElementById('middleName').value;
+            const middleNameError = validateName(middleName, false);
+            if (middleNameError) {
+                showError('middleName', middleNameError);
+                isValid = false;
+            }
+            
+            const birthDate = document.getElementById('birthDate').value;
+            const birthDateError = validateBirthDate(birthDate);
+            if (birthDateError) {
+                showError('birthDate', birthDateError);
+                isValid = false;
+            }
+            
+            const email = document.getElementById('email').value;
+            const emailError = validateEmail(email);
+            if (emailError) {
+                showError('email', emailError);
+                isValid = false;
+            }
+            
+            const phone = document.getElementById('phone').value;
+            const phoneError = validatePhone(phone);
+            if (phoneError) {
+                showError('phone', phoneError);
+                isValid = false;
+            }
+            
+            const address = document.getElementById('address').value;
+            const addressError = validateAddress(address);
+            if (addressError) {
+                showError('address', addressError);
+                isValid = false;
+            }
+            
+            const averageScore = document.getElementById('averageScore').value;
+            const averageScoreError = validateAverageScore(averageScore);
+            if (averageScoreError) {
+                showError('averageScore', averageScoreError);
+                isValid = false;
+            }
+            
+            const specialty = document.getElementById('specialty').value;
+            const specialtyError = validateSelection(specialty, 'специальность');
+            if (specialtyError) {
+                showError('specialty', specialtyError);
+                isValid = false;
+            }
+            
+            // Проверка радиокнопок (форма обучения)
+            const studyForm = document.querySelector('input[name="studyForm"]:checked');
+            const studyFormValue = studyForm ? studyForm.value : '';
+            const studyFormError = validateSelection(studyFormValue, 'форму обучения');
+            if (studyFormError) {
+                showError('studyForm', studyFormError);
+                isValid = false;
+            }
+            
+            // Проверка чекбокса согласия
+            const consent = document.getElementById('consent').checked;
+            if (!consent) {
+                showError('consent', 'Необходимо дать согласие на обработку данных');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // Отображение результатов
+        function showResults(formData) {
+            const resultContainer = document.getElementById('resultContainer');
+            const resultData = document.getElementById('resultData');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Форматирование даты
+            const formatDate = (dateString) => {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('ru-RU');
+            };
+            
+            // Форматирование формы обучения
+            const formatStudyForm = (value) => {
+                const forms = {
+                    'fullTime': 'Очная',
+                    'partTime': 'Заочная',
+                    'distance': 'Дистанционная'
+                };
+                return forms[value] || value;
+            };
+            
+            // Форматирование специальности
+            const formatSpecialty = (value) => {
+                const specialties = {
+                    'informatics': 'Информатика и вычислительная техника',
+                    'software': 'Программная инженерия',
+                    'cybersecurity': 'Информационная безопасность',
+                    'business': 'Бизнес-информатика',
+                    'mathematics': 'Прикладная математика'
+                };
+                return specialties[value] || value;
+            };
+            
+            // Создание HTML для результатов
+            const resultsHTML = `
+                <div class="result-item">
+                    <div class="result-label">ФИО</div>
+                    <div class="result-value">${formData.lastName} ${formData.firstName} ${formData.middleName || ''}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Дата рождения</div>
+                    <div class="result-value">${formatDate(formData.birthDate)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Контакты</div>
+                    <div class="result-value">${formData.email}<br>${formData.phone}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Адрес</div>
+                    <div class="result-value">${formData.address}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Образовательные данные</div>
+                    <div class="result-value">Средний балл: ${formData.averageScore}<br>
+                    Специальность: ${formatSpecialty(formData.specialty)}<br>
+                    Форма обучения: ${formatStudyForm(formData.studyForm)}</div>
+                </div>
+                ${formData.achievements ? `
+                <div class="result-item">
+                    <div class="result-label">Достижения</div>
+                    <div class="result-value">${formData.achievements}</div>
+                </div>
+                ` : ''}
+                <div class="result-item">
+                    <div class="result-label">Дата регистрации</div>
+                    <div class="result-value">${new Date().toLocaleString('ru-RU')}</div>
+                </div>
+            `;
+            
+            resultData.innerHTML = resultsHTML;
+            resultContainer.style.display = 'block';
+            successMessage.style.display = 'block';
+            
+            // Прокрутка к результатам
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Обработка отправки формы
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Предотвращаем стандартную отправку
+            
+            console.log('Попытка отправки формы...');
+            
+            // Валидация формы
+            if (!validateForm()) {
+                console.log('Форма содержит ошибки');
+                return;
+            }
+            
+            // Сбор данных формы
+            const formData = {
+                lastName: document.getElementById('lastName').value,
+                firstName: document.getElementById('firstName').value,
+                middleName: document.getElementById('middleName').value,
+                birthDate: document.getElementById('birthDate').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                averageScore: document.getElementById('averageScore').value,
+                specialty: document.getElementById('specialty').value,
+                studyForm: document.querySelector('input[name="studyForm"]:checked').value,
+                achievements: document.getElementById('achievements').value,
+                consent: document.getElementById('consent').checked,
+                registrationDate: new Date().toISOString()
+            };
+            
+            console.log('Данные формы:', formData);
+            
+            // Показать результаты
+            showResults(formData);
+            
+            // Очистить форму через 2 секунды (после того как пользователь увидел результаты)
+            setTimeout(() => {
+                resetForm();
+                console.log('Форма автоматически очищена');
+            }, 2000);
+        });
+        
+        // ============================================
+        // МАСКА ДЛЯ ТЕЛЕФОНА
+        // ============================================
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.startsWith('7')) {
+                value = value.substring(1);
+            }
+            
+            if (value.length > 0) {
+                value = '+7 (' + value.substring(0, 3);
+                if (value.length > 7) {
+                    value += ') ' + value.substring(7, 10);
+                }
+                if (value.length > 12) {
+                    value += '-' + value.substring(12, 14);
+                }
+                if (value.length > 15) {
+                    value += '-' + value.substring(15, 17);
+                }
+            } else {
+                value = '+7 (';
+            }
+            
+            e.target.value = value;
+        });
+        
+        // ============================================
+        // РЕАЛЬНОЕ ВРЕМЯ ВАЛИДАЦИИ (при потере фокуса)
+        // ============================================
+        const fieldsToValidate = ['lastName', 'firstName', 'middleName', 'birthDate', 
+                                 'email', 'phone', 'address', 'averageScore'];
+        
+        fieldsToValidate.forEach(fieldId => {
+            document.getElementById(fieldId).addEventListener('blur', function() {
+                const value = this.value;
+                let error = '';
+                
+                switch(fieldId) {
+                    case 'lastName':
+                    case 'firstName':
+                        error = validateName(value, fieldId !== 'middleName');
+                        break;
+                    case 'middleName':
+                        error = validateName(value, false);
+                        break;
+                    case 'email':
+                        error = validateEmail(value);
+                        break;
+                    case 'phone':
+                        error = validatePhone(value);
+                        break;
+                    case 'birthDate':
+                        error = validateBirthDate(value);
+                        break;
+                    case 'address':
+                        error = validateAddress(value);
+                        break;
+                    case 'averageScore':
+                        error = validateAverageScore(value);
+                        break;
+                }
+                
+                if (error) {
+                    showError(fieldId, error);
+                } else {
+                    hideError(fieldId);
+                }
+            });
+        });
+        
+        // Для select и checkbox тоже добавляем валидацию при изменении
+        document.getElementById('specialty').addEventListener('change', function() {
+            if (this.value) {
+                hideError('specialty');
+            }
+        });
+        
+        document.querySelectorAll('input[name="studyForm"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                hideError('studyForm');
+            });
+        });
+        
+        document.getElementById('consent').addEventListener('change', function() {
+            if (this.checked) {
+                hideError('consent');
+            }
+        });
+        
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+        console.log('Форма регистрации абитуриента загружена');
+        console.log('Вариант 6: Валидация формы с проверкой всех полей');
+        
+        // Установка сегодняшней даты как максимальной для даты рождения
+        const today = new Date();
+        const maxDate = new Date();
+        maxDate.setFullYear(today.getFullYear() - 16);
+        const minDate = new Date();
+        minDate.setFullYear(today.getFullYear() - 70);
+        
+        document.getElementById('birthDate').max = maxDate.toISOString().split('T')[0];
+        document.getElementById('birthDate').min = minDate.toISOString().split('T')[0];
+        
+        // Пример заполнения для тестирования (можно удалить)
+        document.getElementById('lastName').value = 'Иванов';
+        document.getElementById('firstName').value = 'Иван';
+        document.getElementById('middleName').value = 'Иванович';
+        document.getElementById('birthDate').value = '2000-05-15';
+        document.getElementById('email').value = 'ivanov@example.com';
+        document.getElementById('phone').value = '+7 (999) 123-45-67';
+        document.getElementById('address').value = 'г. Москва, ул. Примерная, д. 1';
+        document.getElementById('averageScore').value = '4.5';
+        document.getElementById('specialty').value = 'informatics';
+        document.getElementById('fullTime').checked = true;
+        document.getElementById('consent').checked = true;
+    </script>
+</body>
+</html>
