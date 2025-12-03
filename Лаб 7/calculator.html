@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .calculator {
+            width: 320px;
+            background-color: #2c2c2c;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        .display {
+            background-color: #1a1a1a;
+            color: white;
+            font-size: 36px;
+            padding: 20px;
+            text-align: right;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            min-height: 80px;
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+        }
+        
+        button {
+            border: none;
+            padding: 20px;
+            font-size: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #4a4a4a;
+            color: white;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: #5a5a5a;
+        }
+        
+        .function {
+            background-color: #616161;
+        }
+        
+        .operator {
+            background-color: #ff9500;
+        }
+        
+        .operator:hover {
+            background-color: #ffaa33;
+        }
+        
+        .equals {
+            background-color: #ff9500;
+            grid-column: span 2;
+        }
+        
+        .zero {
+            grid-column: span 2;
+        }
+        
+        .clear {
+            background-color: #a6a6a6;
+            color: black;
+        }
+        
+        .clear:hover {
+            background-color: #b6b6b6;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="clear" onclick="clearAll()">C</button>
+            <button class="clear" onclick="clearEntry()">CE</button>
+            <button class="clear" onclick="backspace()">←</button>
+            <button class="operator" onclick="appendOperation('/')">÷</button>
+            
+            <button class="function" onclick="appendNumber('7')">7</button>
+            <button class="function" onclick="appendNumber('8')">8</button>
+            <button class="function" onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="appendOperation('*')">×</button>
+            
+            <button class="function" onclick="appendNumber('4')">4</button>
+            <button class="function" onclick="appendNumber('5')">5</button>
+            <button class="function" onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="appendOperation('-')">−</button>
+            
+            <button class="function" onclick="appendNumber('1')">1</button>
+            <button class="function" onclick="appendNumber('2')">2</button>
+            <button class="function" onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="appendOperation('+')">+</button>
+            
+            <button class="function" onclick="changeSign()">±</button>
+            <button class="function" onclick="appendNumber('0')" class="zero">0</button>
+            <button class="function" onclick="appendDecimal()">.</button>
+            
+            <button class="operator equals" onclick="calculate()">=</button>
+            
+            <button class="function" onclick="calculateSquareRoot()">√</button>
+            <button class="function" onclick="calculateReciprocal()">1/x</button>
+            <button class="function" onclick="calculatePercent()">%</button>
+        </div>
+    </div>
+
+    <script>
+        let displayValue = '0';
+        let firstOperand = null;
+        let operator = null;
+        let waitingForSecondOperand = false;
+        
+        const display = document.getElementById('display');
+        
+        function updateDisplay() {
+            display.textContent = displayValue;
+        }
+        
+        function appendNumber(number) {
+            if (waitingForSecondOperand) {
+                displayValue = number;
+                waitingForSecondOperand = false;
+            } else {
+                displayValue = displayValue === '0' ? number : displayValue + number;
+            }
+            updateDisplay();
+        }
+        
+        function appendDecimal() {
+            if (waitingForSecondOperand) {
+                displayValue = '0.';
+                waitingForSecondOperand = false;
+                updateDisplay();
+                return;
+            }
+            
+            if (!displayValue.includes('.')) {
+                displayValue += '.';
+            }
+            updateDisplay();
+        }
+        
+        function appendOperation(nextOperator) {
+            const inputValue = parseFloat(displayValue);
+            
+            if (operator && waitingForSecondOperand) {
+                operator = nextOperator;
+                return;
+            }
+            
+            if (firstOperand === null) {
+                firstOperand = inputValue;
+            } else if (operator) {
+                const result = calculateResult(firstOperand, inputValue, operator);
+                displayValue = `${parseFloat(result.toFixed(7))}`;
+                firstOperand = result;
+            }
+            
+            waitingForSecondOperand = true;
+            operator = nextOperator;
+            updateDisplay();
+        }
+        
+        function calculateResult(first, second, operator) {
+            switch(operator) {
+                case '+': return first + second;
+                case '-': return first - second;
+                case '*': return first * second;
+                case '/': return second !== 0 ? first / second : 'Ошибка';
+                default: return second;
+            }
+        }
+        
+        function calculate() {
+            const inputValue = parseFloat(displayValue);
+            
+            if (operator && !waitingForSecondOperand) {
+                const result = calculateResult(firstOperand, inputValue, operator);
+                displayValue = `${parseFloat(result.toFixed(7))}`;
+                firstOperand = null;
+                operator = null;
+                waitingForSecondOperand = false;
+                updateDisplay();
+            }
+        }
+        
+        function clearAll() {
+            displayValue = '0';
+            firstOperand = null;
+            operator = null;
+            waitingForSecondOperand = false;
+            updateDisplay();
+        }
+        
+        function clearEntry() {
+            displayValue = '0';
+            updateDisplay();
+        }
+        
+        function backspace() {
+            if (displayValue.length > 1) {
+                displayValue = displayValue.slice(0, -1);
+            } else {
+                displayValue = '0';
+            }
+            updateDisplay();
+        }
+        
+        function changeSign() {
+            displayValue = (parseFloat(displayValue) * -1).toString();
+            updateDisplay();
+        }
+        
+        function calculateSquareRoot() {
+            const value = parseFloat(displayValue);
+            if (value >= 0) {
+                displayValue = Math.sqrt(value).toString();
+            } else {
+                displayValue = 'Ошибка';
+            }
+            updateDisplay();
+        }
+        
+        function calculateReciprocal() {
+            const value = parseFloat(displayValue);
+            if (value !== 0) {
+                displayValue = (1 / value).toString();
+            } else {
+                displayValue = 'Ошибка';
+            }
+            updateDisplay();
+        }
+        
+        function calculatePercent() {
+            const value = parseFloat(displayValue);
+            displayValue = (value / 100).toString();
+            updateDisplay();
+        }
+        
+        // Инициализация
+        updateDisplay();
+    </script>
+</body>
+</html>
