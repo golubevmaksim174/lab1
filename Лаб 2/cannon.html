@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выстрел из пушки - Вариант 6</title>
+    <style>
+        /body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    overflow: hidden;
+}
+
+.scene {
+    position: relative;
+    width: 800px;
+    height: 400px;
+    background-color: #e6f7ff;
+}
+
+/* Основание пушки */
+.cannon {
+    position: absolute;
+    bottom: 100px;
+    left: 100px;
+}
+.base {
+    width: 60px;
+    height: 20px;
+    background-color: #555;
+    border-radius: 5px;
+}
+/* Ствол пушки */
+.barrel {
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+    width: 120px;
+    height: 20px;
+    background-color: #333;
+    border-radius: 10px 5px 5px 10px;
+    transform-origin: left center; /* Важно! Вращение вокруг левой стороны */
+    animation: recoil 0.2s 1s forwards; /* Отдача ствола */
+}
+
+/* Ядро */
+.cannonball {
+    position: absolute;
+    bottom: 110px;
+    left: 210px; /* Начальная позиция у дула */
+    width: 25px;
+    height: 25px;
+    background-color: #111;
+    border-radius: 50%;
+    z-index: 10;
+    /* Анимация полета ядра. Без задержки (0s) оно уже в воздухе.
+       Мы заставим его ждать, пока ствол не отдаст, с помощью animation-delay. */
+    animation: fly 1s 1.1s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards,
+               hit 0.3s 2.1s forwards; /* Анимация попадания */
+}
+
+/* Цель */
+.target {
+    position: absolute;
+    bottom: 120px;
+    right: 200px;
+}
+.target-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid #333;
+}
+.t1 { width: 80px; height: 80px; }
+.t2 { width: 50px; height: 50px; top: 15px; left: 15px; }
+.t3 { width: 20px; height: 20px; top: 30px; left: 30px; background-color: #c00; }
+
+/* Вспышка выстрела (появляется и быстро исчезает) */
+.muzzle-flash {
+    position: absolute;
+    bottom: 105px;
+    left: 215px;
+    width: 30px;
+    height: 30px;
+    background-color: #ff9900;
+    border-radius: 50%;
+    box-shadow: 0 0 20px 10px #ff9900;
+    opacity: 0;
+    z-index: 5;
+    animation: flash 0.1s 1.05s forwards;
+}
+
+/* Взрыв (скрыт, появляется при попадании) */
+.explosion {
+    position: absolute;
+    bottom: 120px;
+    right: 200px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ff6600, #ff3300);
+    box-shadow: 0 0 30px 15px rgba(255, 102, 0, 0.7);
+    opacity: 0;
+    z-index: 20;
+    animation: explode 0.5s 2.1s forwards;
+}
+
+/* КЛЮЧЕВЫЕ КАДРЫ АНИМАЦИИ */
+
+/* 1. Отдача ствола */
+@keyframes recoil {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-15deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* 2. Вспышка */
+@keyframes flash {
+    0% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0; transform: scale(0.8); }
+}
+
+/* 3. Полет ядра по параболе */
+@keyframes fly {
+    0% {
+        left: 210px;
+        bottom: 110px;
+        transform: scale(1);
+    }
+    50% {
+        bottom: 250px; /* Высшая точка траектории */
+    }
+    100% {
+        left: 560px; /* Центр цели (правая сторона 200px + половина ширины цели) */
+        bottom: 125px; /* Уровень центра цели */
+        transform: scale(1);
+    }
+}
+
+/* 4. Эффект "схлопывания" ядра при ударе */
+@keyframes hit {
+    100% {
+        transform: scale(0);
+    }
+}
+
+/* 5. Взрыв цели */
+@keyframes explode {
+    0% {
+        opacity: 1;
+        transform: scale(0.1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.5);
+    }
+}/
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <!-- Пушка -->
+        <div class="cannon">
+            <div class="base"></div>
+            <div class="barrel"></div>
+        </div>
+        <!-- Ядро -->
+        <div class="cannonball"></div>
+        <!-- Цель -->
+        <div class="target">
+            <div class="target-circle t1"></div>
+            <div class="target-circle t2"></div>
+            <div class="target-circle t3"></div>
+        </div>
+        <!-- Вспышка выстрела -->
+        <div class="muzzle-flash"></div>
+        <!-- Взрыв при попадании -->
+        <div class="explosion"></div>
+    </div>
+</body>
+</html>
